@@ -1,11 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <!-- Framework exato suportado pelo WindowSill.API -->
-    <TargetFramework>net10.0-windows10.0.22621</TargetFramework>
+    <!-- WindowSill usa .NET 9 + WinUI3/WASDK -->
+    <TargetFramework>net9.0-windows10.0.22621.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Platforms>x64</Platforms>
 
     <!-- Metadados da extensao -->
@@ -21,8 +20,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- SDK oficial do WindowSill - versao mais recente -->
-    <PackageReference Include="WindowSill.API" Version="0.9.21" />
+    <!--
+      WindowSill.API nao esta no nuget.org.
+      Referencia a DLL instalada localmente junto com o WindowSill.
+      Caminho padrao apos instalacao via Microsoft Store / MSIX.
+      Ajuste o caminho se o WindowSill estiver instalado em local diferente.
+    -->
+    <Reference Include="WindowSill.API">
+      <HintPath>$(LOCALAPPDATA)\Microsoft\WindowsApps\WindowSill.API.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
   </ItemGroup>
 
 </Project>

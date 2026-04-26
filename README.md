@@ -1,36 +1,53 @@
-# WindowSill Disk I/O - Complete DevOps Kit
+# WindowSill Disk I/O Extension
 
-Extensão para exibir métricas de I/O de disco na barra do WindowSill.
+Exibe métricas de leitura/escrita de disco em tempo real na barra do [WindowSill](https://getwindowsill.app).
 
----
+## O que aparece na barra
 
-## Pipeline local
+```
+R 12.3  W 4.1 MB/s  Q:0
+```
 
-### Build + Pack
+- **R** = Read MB/s
+- **W** = Write MB/s  
+- **Q** = Current Disk Queue Length
+
+Tooltip ao passar o mouse exibe os valores com 2 casas decimais.
+
+## Pré-requisitos
+
+- Windows 10/11 x64
+- [WindowSill](https://getwindowsill.app) instalado
+- [.NET 9 SDK](https://aka.ms/dotnet/download)
+- Visual Studio 2022 com workload **WinUI application development** + **Windows 11 SDK (10.0.22621.0)**
+
+## Como localizar a DLL do WindowSill.API
+
+Após instalar o WindowSill, localize o arquivo `WindowSill.API.dll`:
+
+```powershell
+Get-ChildItem "$env:LOCALAPPDATA\Microsoft\WindowsApps" -Filter "WindowSill.API.dll" -Recurse -ErrorAction SilentlyContinue
+Get-ChildItem "$env:PROGRAMFILES\WindowsApps" -Filter "WindowSill.API.dll" -Recurse -ErrorAction SilentlyContinue 2>$null
+```
+
+Atualize o `<HintPath>` no `.csproj` com o caminho encontrado.
+
+## Build
+
 ```powershell
 .\build-and-pack.ps1
 ```
 
-Gera `artifacts/WindowSill.DiskIo.X.Y.Z.nupkg` e `artifacts/WindowSill.DiskIo.X.Y.Z.wsext`.
+## Instalação no WindowSill
 
-### Instalar
 ```powershell
-.\install-diskio-extension.ps1 -ExtensionPath .\artifacts\WindowSill.DiskIo.*.wsext
+.\install-diskio-extension.ps1 -ExtensionPath .\artifacts\WindowSill.DiskIo.0.1.0.wsext
 ```
 
----
+## Contadores usados
 
-## CI/CD GitHub
-
-- Push `main`: build, pack, upload `.nupkg` + `.wsext`.
-- Release `v*`: publica `.nupkg` no NuGet.
-
----
-
-## Fluxo
-
-1. Build gera `.nupkg`.
-2. Script renomeia para `.wsext`.
-3. Installer valida política, registra WindowSill, instala `.wsext`.
-
-**Configurar NUGET_API_KEY em GitHub Secrets para publicação automática.**
+| Counter | Categoria | Descrição |
+|---|---|---|
+| Disk Read Bytes/sec | PhysicalDisk | Bytes lidos por segundo |
+| Disk Write Bytes/sec | PhysicalDisk | Bytes escritos por segundo |
+| Current Disk Queue Length | PhysicalDisk | Requisições aguardando na fila |

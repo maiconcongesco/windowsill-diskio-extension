@@ -4,7 +4,7 @@ using WindowSill.API;
 namespace WindowSill.DiskIo;
 
 /// <summary>
-/// Ponto de entrada da extensao registrado pelo WindowSill via MEF.
+/// Ponto de entrada MEF da extensao.
 /// </summary>
 [Export(typeof(IExtension))]
 public sealed class ExtensionEntry : IExtension
