@@ -1,0 +1,76 @@
+name: Disk I/O CI/CD
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  release:
+    types: [ published ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        run: dotnet restore .\WindowSill.DiskIo\WindowSill.DiskIo.csproj
+
+      - name: Build
+        run: dotnet build .\WindowSill.DiskIo\WindowSill.DiskIo.csproj -c Release --no-restore
+
+      - name: Pack
+        run: dotnet pack .\WindowSill.DiskIo\WindowSill.DiskIo.csproj -c Release --no-build -o .\artifacts
+
+      - name: Convert to wsext
+        shell: pwsh
+        run: |
+          $pkg = Get-ChildItem .\artifacts\WindowSill.DiskIo*.nupkg | Select-Object -First 1
+          $wsext = Join-Path $pkg.DirectoryName ($pkg.BaseName + ".wsext")
+          Copy-Item $pkg.FullName $wsext -Force
+          Write-Host "wsext: $wsext"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: diskio-extension
+          path: |
+            .\artifacts\*.nupkg
+            .\artifacts\*.wsext
+
+  publish-nuget:
+    if: github.event_name == 'release' && github.event.action == 'published'
+    needs: build
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: diskio-extension
+          path: .\artifacts
+
+      - name: Publish to NuGet
+        shell: pwsh
+        run: |
+          $pkg = Get-ChildItem .\artifacts\WindowSill.DiskIo*.nupkg | Select-Object -First 1
+          dotnet nuget push $pkg.FullName --source https://api.nuget.org/v3/index.json --api-key $env:NUGET_API_KEY --skip-duplicate
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
