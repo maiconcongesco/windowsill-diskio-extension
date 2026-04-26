@@ -2,10 +2,12 @@
 
   <PropertyGroup>
     <!--
-      net10.0-windows: sem sufixo de versao do Windows SDK.
+      net10.0-windows10.0.26100.0 = Windows 11 SDK 26100 (disponivel no NuGet para .NET 10).
+      NÃO usar net10.0-windows (resolve para windows7.0 e quebra os PackageReference).
+      NÃO usar net10.0-windows10.0.22621.0 (SDK 22621 nao tem Ref pack para .NET 10).
       WindowSill 0.9.21 foi compilado contra .NET 10.
     -->
-    <TargetFramework>net10.0-windows</TargetFramework>
+    <TargetFramework>net10.0-windows10.0.26100.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <Platforms>x64</Platforms>
@@ -23,9 +25,9 @@
 
   <ItemGroup>
     <!-- MEF moderno (.NET Core / .NET 5+) -->
-    <PackageReference Include="System.Composition" Version="9.0.0" />
+    <PackageReference Include="System.Composition" Version="10.0.0" />
     <!-- PerformanceCounter nao esta incluido no TFM padrao -->
-    <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="9.0.0" />
+    <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="10.0.0" />
   </ItemGroup>
 
   <ItemGroup>
