@@ -1,17 +1,17 @@
-using System.ComponentModel.Composition;
+using System.Composition;
 using System.Timers;
+using Microsoft.UI.Xaml.Controls;
 using WindowSill.API;
 
 namespace WindowSill.DiskIo;
 
 /// <summary>
 /// Sill de Disk I/O: sempre visivel na barra, atualiza a cada 1 segundo.
-/// Implementa ISillActivatedByDefault para ficar permanentemente ativo.
-/// Implementa ISillSingleView para exibir view customizada (texto) na barra.
+/// Implementa ISillSingleView para exibir texto customizado na barra.
 /// </summary>
 [Export(typeof(ISill))]
 [Name("Disk I/O")]
-public sealed class DiskIoSill : ISillActivatedByDefault, ISillSingleView, IDisposable
+public sealed class DiskIoSill : ISill, ISillSingleView, ISillActivatedByDefault, IDisposable
 {
     private readonly DiskIoCollector _collector = new();
     private readonly System.Timers.Timer _timer;
@@ -19,6 +19,16 @@ public sealed class DiskIoSill : ISillActivatedByDefault, ISillSingleView, IDisp
     private bool _disposed;
 
     public event EventHandler? ContentChanged;
+
+    // --- ISill ---
+    public string DisplayName  => "Disk I/O";
+    public IReadOnlyList<object> SettingsViews => Array.Empty<object>();
+
+    public Task OnActivatedAsync()   => Task.CompletedTask;
+    public Task OnDeactivatedAsync() => Task.CompletedTask;
+
+    // --- ISillSingleView ---
+    public object View => BuildView();
 
     public DiskIoSill()
     {
@@ -32,9 +42,14 @@ public sealed class DiskIoSill : ISillActivatedByDefault, ISillSingleView, IDisp
         _timer.Start();
     }
 
-    // Texto exibido na barra
-    public string Title   => _latest.BarText;
-    public string? Subtitle => _latest.TooltipText;
+    private object BuildView()
+    {
+        return new TextBlock
+        {
+            Text    = _latest.BarText,
+            ToolTipService = { ToolTip = _latest.TooltipText }
+        };
+    }
 
     public void Dispose()
     {

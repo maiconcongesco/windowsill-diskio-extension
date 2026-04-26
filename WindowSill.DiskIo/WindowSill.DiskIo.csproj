@@ -3,9 +3,7 @@
   <PropertyGroup>
     <!--
       net10.0-windows: sem sufixo de versao do Windows SDK.
-      O sufixo 10.0.22621.0 exige Microsoft.Windows.SDK.NET.Ref 10.0.22621.57
-      que nao esta disponivel no NuGet para .NET 10 ainda.
-      WindowSill 0.9.21 foi compilado contra .NET 10 — use net10.0-windows.
+      WindowSill 0.9.21 foi compilado contra .NET 10.
     -->
     <TargetFramework>net10.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
@@ -22,6 +20,13 @@
     <RepositoryUrl>https://github.com/maiconcongesco/windowsill-diskio-extension</RepositoryUrl>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
+
+  <ItemGroup>
+    <!-- MEF moderno (.NET Core / .NET 5+) -->
+    <PackageReference Include="System.Composition" Version="9.0.0" />
+    <!-- PerformanceCounter nao esta incluido no TFM padrao -->
+    <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="9.0.0" />
+  </ItemGroup>
 
   <ItemGroup>
     <!--

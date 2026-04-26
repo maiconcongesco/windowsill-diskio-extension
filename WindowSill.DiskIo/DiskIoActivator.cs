@@ -1,4 +1,4 @@
-using System.ComponentModel.Composition;
+using System.Composition;
 using WindowSill.Sdk.Activation;
 
 namespace WindowSill.DiskIo;
