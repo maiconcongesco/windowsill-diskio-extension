@@ -1,10 +1,10 @@
 using System.ComponentModel.Composition;
-using WindowSill.Sdk;
+using WindowSill.API;
 
 namespace WindowSill.DiskIo;
 
 /// <summary>
-/// Ponto de entrada da extensao. Registra metadados no host WindowSill.
+/// Ponto de entrada da extensao registrado pelo WindowSill via MEF.
 /// </summary>
 [Export(typeof(IExtension))]
 public sealed class ExtensionEntry : IExtension
