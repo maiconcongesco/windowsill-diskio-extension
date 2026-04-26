@@ -1,17 +1,15 @@
 using System.Composition;
 using System.Timers;
-using Microsoft.UI.Xaml.Controls;
 using WindowSill.API;
 
 namespace WindowSill.DiskIo;
 
 /// <summary>
-/// Sill de Disk I/O: sempre visivel na barra, atualiza a cada 1 segundo.
-/// Implementa ISillSingleView para exibir texto customizado na barra.
+/// Sill de Disk I/O: atualiza a cada 1 segundo, exibe R/W MB/s na barra.
 /// </summary>
 [Export(typeof(ISill))]
 [Name("Disk I/O")]
-public sealed class DiskIoSill : ISill, ISillSingleView, ISillActivatedByDefault, IDisposable
+public sealed class DiskIoSill : ISill, ISillSingleView, IDisposable
 {
     private readonly DiskIoCollector _collector = new();
     private readonly System.Timers.Timer _timer;
@@ -21,14 +19,17 @@ public sealed class DiskIoSill : ISill, ISillSingleView, ISillActivatedByDefault
     public event EventHandler? ContentChanged;
 
     // --- ISill ---
-    public string DisplayName  => "Disk I/O";
-    public IReadOnlyList<object> SettingsViews => Array.Empty<object>();
-
-    public Task OnActivatedAsync()   => Task.CompletedTask;
-    public Task OnDeactivatedAsync() => Task.CompletedTask;
+    public string DisplayName => "Disk I/O";
+    public SillSettingsView[] SettingsViews => Array.Empty<SillSettingsView>();
+    public ValueTask OnActivatedAsync()   => ValueTask.CompletedTask;
+    public ValueTask OnDeactivatedAsync() => ValueTask.CompletedTask;
 
     // --- ISillSingleView ---
-    public object View => BuildView();
+    public SillView View => new SillView
+    {
+        Title    = _latest.BarText,
+        Subtitle = _latest.TooltipText
+    };
 
     public DiskIoSill()
     {
@@ -40,15 +41,6 @@ public sealed class DiskIoSill : ISill, ISillSingleView, ISillActivatedByDefault
         };
         _timer.AutoReset = true;
         _timer.Start();
-    }
-
-    private object BuildView()
-    {
-        return new TextBlock
-        {
-            Text    = _latest.BarText,
-            ToolTipService = { ToolTip = _latest.TooltipText }
-        };
     }
 
     public void Dispose()
