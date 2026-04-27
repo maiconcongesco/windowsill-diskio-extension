@@ -1,8 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <!-- Mesmo TargetFramework do repositorio oficial WindowSill-app/Extensions -->
-    <TargetFramework>net10.0-windows10.0.22621</TargetFramework>
+    <!--
+      net10.0-windows (sem sufixo de versao do SDK):
+      - Nao usa WinUI/XAML/WinRT, entao nao precisa do Windows App SDK completo
+      - Compativel com o CI (windows-latest nao tem Microsoft.Build.Packaging.Pri.Tasks)
+      - Funciona perfeitamente no WindowSill pois eh pure C# + MEF + PerformanceCounter
+    -->
+    <TargetFramework>net10.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>preview</LangVersion>
@@ -40,7 +45,7 @@
     <PackageReference Include="System.Composition" Version="8.0.0" />
     <!-- PerformanceCounter -->
     <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="8.0.0" />
-    <!-- API publica do WindowSill (mesma versao usada pelo repositorio oficial) -->
+    <!-- API publica do WindowSill -->
     <PackageReference Include="WindowSill.API" Version="0.9.21" />
   </ItemGroup>
 
