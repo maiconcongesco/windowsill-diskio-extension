@@ -8,7 +8,6 @@
     <Platforms>AnyCPU</Platforms>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <WindowsAppSDKSelfContained>false</WindowsAppSDKSelfContained>
-    <UseWinUI>true</UseWinUI>
 
     <PackageId>WindowSill.DiskIo</PackageId>
     <Version>0.2.0</Version>
