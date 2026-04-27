@@ -1,53 +1,47 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <!--
-      net10.0-windows sem sufixo de versao de SDK:
-        - resolve para net10.0-windows7.0 (minimo de Windows)
-        - NAO exige Microsoft.Windows.SDK.NET.Ref (que nao existe no NuGet para .NET 10)
-        - compativel com pacotes 8.0.0 que tem net10.0-windows como computed target
-    -->
-    <TargetFramework>net10.0-windows</TargetFramework>
+    <!-- Mesmo TargetFramework do repositorio oficial WindowSill-app/Extensions -->
+    <TargetFramework>net10.0-windows10.0.22621</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Platforms>x64</Platforms>
+    <LangVersion>preview</LangVersion>
+    <Platforms>AnyCPU</Platforms>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
 
     <PackageId>WindowSill.DiskIo</PackageId>
     <Version>0.2.0</Version>
     <Authors>maiconcongesco</Authors>
     <Title>Disk I/O</Title>
-    <Description>Exibe metricas de leitura/escrita de disco (MB/s) e fila na barra do WindowSill.</Description>
+    <Description>
+      Monitor your disk read/write activity without leaving your flow.
+      • Real-time read and write speed (MB/s)
+      • Disk queue length
+      • All from your sill.
+      Works with all local disks on Windows.
+    </Description>
     <PackageTags>windowsill;diskio;monitoring;disk</PackageTags>
     <PackageProjectUrl>https://github.com/maiconcongesco/windowsill-diskio-extension</PackageProjectUrl>
     <RepositoryUrl>https://github.com/maiconcongesco/windowsill-diskio-extension</RepositoryUrl>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 
-    <!-- License e Readme para NuGet.org -->
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <!-- License via arquivo (padrao oficial WindowSill) -->
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Inclui o README.md no pacote NuGet -->
-    <None Include="..\README.md" Pack="true" PackagePath="\" />
+    <!-- Arquivos obrigatorios no pacote (padrao WindowSill-app/Extensions) -->
+    <None Include="LICENSE.md" Pack="true" PackagePath="\" />
+    <None Include="CHANGELOGS.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>
-    <!-- MEF moderno - 8.0.0 tem net10.0-windows como computed target -->
+    <!-- MEF moderno -->
     <PackageReference Include="System.Composition" Version="8.0.0" />
-    <!-- PerformanceCounter - 8.0.0 tem net10.0-windows como computed target -->
+    <!-- PerformanceCounter -->
     <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="8.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <!--
-      WindowSill.API.dll instalada localmente via Microsoft Store.
-      Caminho real: C:\Program Files\WindowsApps\64360VelerSoftware.WindowSill_0.9.21.0_x64__j80j2txgjg9dj
-    -->
-    <Reference Include="WindowSill.API">
-      <HintPath>C:\Program Files\WindowsApps\64360VelerSoftware.WindowSill_0.9.21.0_x64__j80j2txgjg9dj\WindowSill.API.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
+    <!-- API publica do WindowSill (mesma versao usada pelo repositorio oficial) -->
+    <PackageReference Include="WindowSill.API" Version="0.9.21" />
   </ItemGroup>
 
 </Project>
