@@ -21,7 +21,16 @@
     <PackageProjectUrl>https://github.com/maiconcongesco/windowsill-diskio-extension</PackageProjectUrl>
     <RepositoryUrl>https://github.com/maiconcongesco/windowsill-diskio-extension</RepositoryUrl>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+
+    <!-- License e Readme para NuGet.org -->
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Inclui o README.md no pacote NuGet -->
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
   <ItemGroup>
     <!-- MEF moderno - 8.0.0 tem net10.0-windows como computed target -->
