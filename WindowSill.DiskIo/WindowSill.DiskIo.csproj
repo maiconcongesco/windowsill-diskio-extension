@@ -2,17 +2,17 @@
 
   <PropertyGroup>
     <!--
-      net10.0-windows (sem sufixo de versao do SDK):
-      - Nao usa WinUI/XAML/WinRT, entao nao precisa do Windows App SDK completo
-      - Compativel com o CI (windows-latest nao tem Microsoft.Build.Packaging.Pri.Tasks)
-      - Funciona perfeitamente no WindowSill pois eh pure C# + MEF + PerformanceCounter
+      net10.0-windows10.0.22621 e necessario para usar tipos WinUI da WindowSill.API
+      (IconElement, SillView, SillSettingsView, SymbolIcon, Symbol etc.)
+      O Windows App SDK e adicionado como PackageReference para resolver esses tipos no CI.
     -->
-    <TargetFramework>net10.0-windows</TargetFramework>
+    <TargetFramework>net10.0-windows10.0.22621</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>preview</LangVersion>
     <Platforms>AnyCPU</Platforms>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <WindowsAppSDKSelfContained>false</WindowsAppSDKSelfContained>
 
     <PackageId>WindowSill.DiskIo</PackageId>
     <Version>0.2.0</Version>
@@ -41,6 +41,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Windows App SDK: resolve tipos WinUI (IconElement, SillView etc.) no CI -->
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250401001" />
     <!-- MEF moderno -->
     <PackageReference Include="System.Composition" Version="8.0.0" />
     <!-- PerformanceCounter -->
