@@ -1,11 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <!--
-      net10.0-windows10.0.22621 e necessario para usar tipos WinUI da WindowSill.API
-      (IconElement, SillView, SillSettingsView, SymbolIcon, Symbol etc.)
-      O Windows App SDK e adicionado como PackageReference para resolver esses tipos no CI.
-    -->
     <TargetFramework>net10.0-windows10.0.22621</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -13,41 +8,46 @@
     <Platforms>AnyCPU</Platforms>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <WindowsAppSDKSelfContained>false</WindowsAppSDKSelfContained>
+    <UseWinUI>true</UseWinUI>
 
     <PackageId>WindowSill.DiskIo</PackageId>
     <Version>0.2.0</Version>
     <Authors>maiconcongesco</Authors>
     <Title>Disk I/O</Title>
-    <Description>
-      Monitor your disk read/write activity without leaving your flow.
-      • Real-time read and write speed (MB/s)
-      • Disk queue length
-      • All from your sill.
-      Works with all local disks on Windows.
-    </Description>
+    <Description>Monitor your disk read/write activity without leaving your flow.
+• Real-time read and write speed (MB/s)
+• Disk queue length
+• All from your sill.
+Works with all local disks on Windows.</Description>
     <PackageTags>windowsill;diskio;monitoring;disk</PackageTags>
     <PackageProjectUrl>https://github.com/maiconcongesco/windowsill-diskio-extension</PackageProjectUrl>
     <RepositoryUrl>https://github.com/maiconcongesco/windowsill-diskio-extension</RepositoryUrl>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-
-    <!-- License via arquivo (padrao oficial WindowSill) -->
+    <PackageIcon>Assets/package.png</PackageIcon>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Arquivos obrigatorios no pacote (padrao WindowSill-app/Extensions) -->
+    <!-- Arquivos obrigatorios no pacote -->
     <None Include="LICENSE.md" Pack="true" PackagePath="\" />
     <None Include="CHANGELOGS.md" Pack="true" PackagePath="\" />
+
+    <!-- Icone do pacote -->
+    <None Include="Assets\package.png" Pack="true" PackagePath="Assets\" />
+
+    <!-- Assets em content (raiz do pacote) -->
+    <Content Include="Assets\package.png" Pack="true" PackagePath="content\Assets\" />
+    <Content Include="Assets\diskio.svg" Pack="true" PackagePath="content\Assets\" />
+
+    <!-- Assets em contentFiles (exigido pelo WindowSill) -->
+    <Content Include="Assets\package.png" Pack="true" PackagePath="contentFiles\any\net10.0-windows10.0.22621\Assets\" />
+    <Content Include="Assets\diskio.svg" Pack="true" PackagePath="contentFiles\any\net10.0-windows10.0.22621\Assets\" />
   </ItemGroup>
 
   <ItemGroup>
-    <!-- Windows App SDK: resolve tipos WinUI (IconElement, SillView etc.) no CI -->
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250401001" />
-    <!-- MEF moderno -->
     <PackageReference Include="System.Composition" Version="8.0.0" />
-    <!-- PerformanceCounter -->
     <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="8.0.0" />
-    <!-- API publica do WindowSill -->
     <PackageReference Include="WindowSill.API" Version="0.9.21" />
   </ItemGroup>
 
