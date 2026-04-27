@@ -1,13 +1,3 @@
-using System.Composition;
-using WindowSill.API;
-
-namespace WindowSill.DiskIo;
-
-/// <summary>
-/// Ativa o sill de Disk I/O sempre (ISillActivatedByDefault).
-/// </summary>
-[Export(typeof(ISillActivatedByDefault))]
-internal sealed class DiskIoActivator : ISillActivatedByDefault
-{
-    public ValueTask OnActivatedAsync() => ValueTask.CompletedTask;
-}
+// Arquivo mantido apenas para compatibilidade de histórico git.
+// A lógica de ativação foi consolidada em DiskIoSill.cs via ISillActivatedByDefault.
+// Este arquivo não contém código compilável e pode ser removido em refatorações futuras.

@@ -3,12 +3,14 @@ param(
     [string]$ExtensionPath,
 
     [Parameter(Mandatory = $false)]
+    [string]$WindowSillPath,
+
+    [Parameter(Mandatory = $false)]
     [switch]$SkipPolicyCheck
 )
 
 $ErrorActionPreference = "Stop"
 $LogFile = "$env:TEMP\DiskIoExtensionInstall-$(Get-Date -Format 'yyyyMMdd-HHmmss').log"
-$windowSillExe = "C:\Program Files\WindowSill\WindowSill.exe"
 $regPath = "HKLM:\SOFTWARE\WindowSill"
 $tempDir = Join-Path $env:TEMP ("DiskIoExt-" + [guid]::NewGuid().Guid)
 
@@ -17,6 +19,32 @@ function Write-Log {
     $line = "[{0}] [{1}] {2}" -f (Get-Date -Format 'yyyy-MM-dd HH:mm:ss'), $Level, $Message
     Write-Host $line
     Add-Content -Path $LogFile -Value $line
+}
+
+function Resolve-WindowSillExe {
+    # 1. Override manual via parâmetro
+    if ($WindowSillPath -and (Test-Path $WindowSillPath)) {
+        return $WindowSillPath
+    }
+    # 2. Instalação tradicional (MSI/standalone)
+    $traditional = "C:\Program Files\WindowSill\WindowSill.exe"
+    if (Test-Path $traditional) {
+        return $traditional
+    }
+    # 3. Instalação MSIX (Microsoft Store / WindowsApps)
+    $msix = Get-ChildItem "C:\Program Files\WindowsApps" -Filter "WindowSill.exe" -Recurse -ErrorAction SilentlyContinue |
+            Where-Object { $_.FullName -match "VelerSoftware" } |
+            Select-Object -First 1
+    if ($msix) {
+        return $msix.FullName
+    }
+    # 4. Busca via Get-AppxPackage
+    $pkg = Get-AppxPackage -Name "*WindowSill*" -ErrorAction SilentlyContinue | Select-Object -First 1
+    if ($pkg) {
+        $exe = Join-Path $pkg.InstallLocation "WindowSill.exe"
+        if (Test-Path $exe) { return $exe }
+    }
+    return $null
 }
 
 function Get-PackageIdFromWsext {
@@ -32,7 +60,12 @@ function Get-PackageIdFromWsext {
 try {
     Write-Log "== Disk I/O Extension Installer =="
 
-    if (-not (Test-Path $windowSillExe)) { throw "WindowSill nao encontrado em $windowSillExe" }
+    $windowSillExe = Resolve-WindowSillExe
+    if (-not $windowSillExe) {
+        throw "WindowSill nao encontrado. Use -WindowSillPath para especificar o caminho manualmente."
+    }
+    Write-Log "WindowSill encontrado em: $windowSillExe"
+
     if (-not (Test-Path $ExtensionPath)) { throw "Arquivo nao encontrado: $ExtensionPath" }
     if (-not $ExtensionPath.EndsWith('.wsext')) { throw "O arquivo deve ter extensao .wsext" }
 
