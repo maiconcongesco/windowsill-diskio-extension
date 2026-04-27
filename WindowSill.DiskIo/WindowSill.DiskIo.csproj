@@ -13,7 +13,7 @@
     <Platforms>x64</Platforms>
 
     <PackageId>WindowSill.DiskIo</PackageId>
-    <Version>0.1.0</Version>
+    <Version>0.2.0</Version>
     <Authors>maiconcongesco</Authors>
     <Title>Disk I/O</Title>
     <Description>Exibe metricas de leitura/escrita de disco (MB/s) e fila na barra do WindowSill.</Description>
